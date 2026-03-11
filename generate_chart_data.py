@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 =============================================================================
 OrbitX — Chart Data Pipeline
@@ -69,9 +68,10 @@ CHART_YEARS = [
 # databases (see full source list in META below).
 # Any year in CHART_YEARS that is absent here is treated as 0.
 CYBER_INCIDENTS: dict[int, int] = {
-    # ── Pre-internet baseline — Ear et al. arXiv:2309.04878 ──────────────
+
     # 72 confirmed incidents 1977–2022, manually extracted from four public
     # incident databases. Counts below reflect only confirmed, dated events.
+    
     1998:   2,   # ROSAT/Goddard hack (physical damage); SkyNet ransoming
     2000:   3,   # NASA breach series; confirmed ground-station intrusions
     2005:   4,
@@ -96,7 +96,7 @@ CYBER_INCIDENTS: dict[int, int] = {
 # ── JSON metadata written into chart_data.json ────────────────────────────────
 META = {
     "version": "2.0",
-    "generated_utc": "",          # injected at runtime
+    "generated_utc": "",         
     "description": (
         "Active satellites (JSR/McDowell) vs space-sector cyber incidents "
         "(Space ISAC + ETH Zürich CSS + Mayer Brown, 2025). "
@@ -173,7 +173,7 @@ def parse_jsr(raw_text: str) -> dict[int, float]:
         except ValueError:
             skipped += 1
             continue
-        year_ac[int(ydate)] = ac   # int() truncates — last row per year wins
+        year_ac[int(ydate)] = ac   
 
     log.info(
         "Parsed %d year-snapshots from JSR (skipped %d non-data lines)",
