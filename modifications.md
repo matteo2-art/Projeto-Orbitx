@@ -54,27 +54,24 @@ Registo unificado de todas as implementações, otimizações e ajustes realizad
 
 25. **Remoção da Meta Description** — A tag `<meta name="description">` original foi removida do cabeçalho HTML.
 
-26. **Correção do Email no Rodapé** — O endereço de email na coluna "Contactos" do rodapé foi atualizado para `orbitx.geral@gmail.com`, substituindo o endereço anterior ofuscado pelo Cloudflare. O link do ícone de email na secção de redes sociais foi igualmente atualizado.
+26. **Correção do Email no Rodapé** — O endereço de email na coluna "Contactos" do rodapé foi atualizado para `orbitx.geral@gmail.com`, substituindo o endereço anterior ofuscado pelo Cloudflare.
 
-27. ***Pipeline* de Dados Automatizado para o Gráfico** — Os dados do gráfico da secção `#ameaca` foram desacoplados do HTML. O `index.html` passa a carregar os dados de forma assíncrona via `fetch('chart_data.json')`. Um script Python independente (`generate_chart_data.py`) trata da extração, processamento e geração do ficheiro JSON, seguindo a arquitetura:
+27. ***Pipeline* de Dados para o Gráfico** — Os dados do gráfico da secção `#ameaca` foram desacoplados do HTML. O `index.html` carrega os dados de forma assíncrona via `fetch('chart_data.json')`. O script `generate_chart_data.py` trata da extração, processamento e geração do ficheiro JSON:
 
-    - **Extração (*Fetch*):** Descarrega o ficheiro `stat001.txt` diretamente da fonte autoritativa *Jonathan's Space Report* (JSR / McDowell, `planet4589.org`), usando um `User-Agent` identificado.
-    - **Processamento (*Parse*):** Analisa o ficheiro linha a linha, extrai a coluna `AC` (*active payloads*) e captura o valor de 31 de dezembro de cada ano da lista `CHART_YEARS` (último registo do ano = *snapshot* de fim de ano).
-    - **Combinação:** Cruza os dados de satélites obtidos dinamicamente com o dicionário `CYBER_INCIDENTS` (curado manualmente a partir de relatórios de inteligência — *Space ISAC*, ETH Zürich CSS, Mayer Brown, Ear et al. arXiv:2309.04878, CSIS STA 2018–2025).
-    - **Validação:** Verifica a integridade do *payload* antes de escrever (comprimento dos arrays, contagens negativas, anos sem dados).
+    - **Extração:** Descarrega `stat001.txt` diretamente do *Jonathan's Space Report* (JSR / McDowell, `planet4589.org`).
+    - **Processamento:** Analisa o ficheiro linha a linha, extrai a coluna `AC` (*active payloads*) e captura o valor de 31 de dezembro de cada ano em `CHART_YEARS`.
+    - **Combinação:** Cruza os dados de satélites com o dicionário `CYBER_INCIDENTS`, curado manualmente a partir de *Space ISAC*, ETH Zürich CSS, Mayer Brown, Ear et al. arXiv:2309.04878 e CSIS STA 2018–2025.
+    - **Validação:** Verifica a integridade do *payload* antes de escrever (comprimento dos arrays, contagens negativas).
     - **Exportação Atómica:** Escreve o `chart_data.json` via padrão *temp-then-rename*, evitando ficheiros corrompidos em caso de interrupção.
-    - **Tratamento de Erros no Frontend:** Se o `chart_data.json` não for encontrado, o `index.html` exibe uma mensagem de erro não intrusiva dentro da área do gráfico, sem quebrar o resto da página.
-    - **Automatização:** O script pode ser agendado com `cron` (ex: semanalmente) ou integrado numa *GitHub Action* para atualização automática sem intervenção manual.
+    - **Tratamento de Erros:** Se o `chart_data.json` não for encontrado, o `index.html` exibe uma mensagem de erro não intrusiva dentro da área do gráfico, sem quebrar o resto da página.
 
 28. **Atualização das Legendas e Fontes do Gráfico** — A barra superior do cartão do gráfico foi melhorada em legibilidade e rigor científico:
 
-    - O tamanho do texto das legendas (`.chart-legend-item`) foi aumentado de `0.65rem` para `0.72rem` e a cor passou de muted para `rgba(255,255,255,.75)`, tornando-as claramente legíveis.
-    - O indicador de estado foi atualizado de `"Fonte: UNOOSA / CSIS / ENISA"` (desatualizado) para `"Live · JSR / Space ISAC / CSIS STA"`, refletindo as fontes reais e o facto de os dados serem atualizados automaticamente.
-    - Foi adicionada uma nova barra de fontes (`.chart-sources-bar`) sob a legenda, com referência explícita às quatro fontes autoritativas utilizadas: *Jonathan McDowell / JSR stat001.txt* (satélites), *Space ISAC & ETH Zürich CSS* (ciberataques 2020–2025), *Ear et al. arXiv:2309.04878* (baseline 1977–2022) e *CSIS Space Threat Assessment 2018–2025*.
+    - O tamanho do texto das legendas (`.chart-legend-item`) foi aumentado de `0.65rem` para `0.72rem` e a cor passou de *muted* para `rgba(255,255,255,.75)`.
+    - O indicador de estado foi atualizado de `"Fonte: UNOOSA / CSIS / ENISA"` para `"Live · JSR / Space ISAC / CSIS STA"`.
+    - Foi adicionada uma nova barra de fontes (`.chart-sources-bar`) com referência explícita às quatro fontes utilizadas: *JSR stat001.txt*, *Space ISAC & ETH Zürich CSS*, *Ear et al. arXiv:2309.04878* e *CSIS STA 2018–2025*.
 
-29. **GitHub Action para Atualização Semanal Automática** — Criado o ficheiro `.github/workflows/update_chart_data.yml` que automatiza completamente o *pipeline* de dados sem necessidade de intervenção manual:
+29. **Correção de Nitidez do Gráfico (HiDPI/Retina)** — O gráfico aparecia desfocado em ecrãs de alta densidade de píxeis. A causa era o *canvas* HTML ser renderizado em resolução 1:1 e depois escalado pelo browser. A correção aplica dois ajustes em conjunto:
 
-    - Corre **todos os domingos às 03:00 UTC** (via `cron`) e também pode ser acionado manualmente pelo separador *Actions* do GitHub.
-    - Instala as dependências Python, executa `generate_chart_data.py`, e faz `commit` + `push` do `chart_data.json` atualizado caso os dados tenham mudado.
-    - Se os dados forem idênticos aos da semana anterior, o workflow termina sem criar um commit vazio (comportamento idempotente).
-    - O *GitHub Pages* serve automaticamente o ficheiro atualizado, tornando o gráfico do site *live* sem qualquer intervenção.
+    - **`fixDPR()`** — antes de o *Chart.js* inicializar, as dimensões físicas do *canvas* são multiplicadas por `window.devicePixelRatio`, o contexto 2D é escalado pelo mesmo fator, e o elemento é CSS-fixado ao tamanho original para não afetar o *layout*.
+    - **`devicePixelRatio` nas opções do *Chart.js*** — garante que os cálculos internos de redimensionamento do *Chart.js* ficam em sincronia com o *canvas* já escalado.

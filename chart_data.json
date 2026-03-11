@@ -1,22 +1,22 @@
 {
   "meta": {
     "version": "2.0",
-    "generated_utc": "2026-03-11T18:21:44Z",
-    "description": "Active satellites (JSR/McDowell) vs space-sector cyber incidents (Space ISAC + ETH Zurich CSS + Mayer Brown, 2025). Counts = publicly reported lower-bound; actual incidence is higher.",
+    "generated_utc": "2026-03-11T20:18:39Z",
+    "description": "Active satellites (JSR/McDowell) vs space-sector cyber incidents (Space ISAC + ETH Zürich CSS + Mayer Brown, 2025). Counts = publicly reported lower-bound; actual incidence is higher.",
     "satellite_sources": [
-      "Jonathan McDowell / JSR stat001.txt (planet4589.org)",
-      "Column 'AC' = active payloads in orbit, Dec-31 end-of-year snapshot",
+      "Jonathan McDowell / JSR stat001.txt — planet4589.org/space/stats/out/stat001.txt",
+      "Column 'AC' = active payloads in orbit, Dec-31 end-of-year snapshot per CHART_YEARS",
       "Cross-validated: UCS Satellite Database; ESA Space Environment Statistics 2026"
     ],
     "attack_sources": [
-      "Space ISAC: 117 incidents Jan-Aug 2025 (+118 % vs 2024) — SpaceNews Nov 2025",
-      "ETH Zurich CSS / Poirier: 237 ops Jan 2023–Jul 2025 — Euronews Nov 2025",
+      "Ear et al. (arXiv:2309.04878): 72 confirmed incidents 1977–2022 — pre-2020 baseline",
+      "CSIS Space Threat Assessment series 2018–2025 — aerospace.csis.org",
+      "Space ISAC: 117 incidents Jan–Aug 2025 (+118 % vs 2024) — SpaceNews Nov 2025",
+      "ETH Zürich CSS / Poirier: 237 ops Jan 2023–Jul 2025 — Euronews Nov 2025",
       "Mayer Brown / Space ISAC: 25 ransomware targets in space sector 2024 — Dec 2025",
-      "Deloitte: Space ISAC tracks hundreds of daily attacks — Dec 2025",
-      "Ear et al. (arXiv:2309.04878): 72 confirmed incidents 1977–2022 (pre-2020 baseline)",
-      "CSIS Space Threat Assessment series 2018–2025 (aerospace.csis.org)"
+      "Deloitte: Space ISAC tracks hundreds of daily attacks — Dec 2025"
     ],
-    "key_caveat": "Cyber counts are a lower-bound of publicly reported incidents. Space ISAC tracks hundreds of daily attacks; figures represent only what becomes publicly disclosed. The 2022 peak reflects the Viasat KA-SAT attack and sustained Russia-Ukraine space cyber operations."
+    "key_caveat": "Cyber counts are a lower-bound of publicly reported incidents. Space ISAC tracks hundreds of daily attacks; figures here represent only what becomes publicly disclosed. The 2022 peak reflects the Viasat KA-SAT attack and sustained Russia-Ukraine space cyber operations."
   },
   "years": [
     1957,
